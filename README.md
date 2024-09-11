@@ -11,39 +11,56 @@ Este repositório possui os materiais de estudo, códigos e slides referentes a 
 
   **Roteiro do Lab:**
 
+  1. Execute o comando:
 
+  ```docker run hello-world```
 
-  Este Lab irá apresentar o conceito de Deployment e do ReplicaSet dentro do Kubernetes.
+  Este comando irá:
+  - Procurar a imagem hello-world localmente.
+  - Se não encontrar, fará o download do Docker Hub.
+  - Criará um contêiner a partir da imagem e o executará.
+  - Exibirá a mensagem "Hello from Docker!" no terminal.
 
-  > **Dica:** É bom trabalhar em pequenos grupos para discutir como adaptar os Deployments para o Projeto do Módulo.
+  2. Verifique as imagens:
 
-  > **Dica:** Certifique-se de que o Minikube esteja no ar antes de começar o Lab, na dúvida, execute o comando `minikube start` no seu Terminal.
+  ```docker images```
 
-  1. Vamos começar realizando um Deployment (se não está confiante de como funciona, veja os slides da instrução à respeito), neste caso, de uma Pod contendo o Nginx e com 3 réplicas. Segue o arquivo de Deployment de nome `nginx-deployment.yaml`.
+  Você verá a imagem hello-world listada. O comando docker images lista todas as imagens Docker baixadas em seu sistema. Cada imagem possui:
+  - REPOSITORY: Nome do repositório da imagem (ex: hello-world, nginx).
+  - TAG: Versão da imagem (ex: latest, 1.23.4).
+  - IMAGE ID: Identificador único da imagem.
+  - CREATED: Data de criação da imagem.
+  - SIZE: Tamanho da imagem.
+
+  3. Execute o comando:
+
+  ```docker run -d -p 80:80 nginx:latest```
+
+  Este comando irá:
+  - Baixar a imagem nginx:latest do Docker Hub se ela não existir localmente.
+  - Criar um contêiner em segundo plano (-d) e encaminhar a porta 80 do host para a porta 80 do contêiner (-p 80:80).
+
+  4. Acesse o servidor Nginx:
+
+  Abra um navegador e acesse ```http://localhost```. Você verá a página padrão do Nginx.
+
+  5. Crie um arquivo chamado docker-compose.yml com o seguinte conteúdo:
 
   ```
-  apiVersion: apps/v1
-  kind: Deployment
-  metadata:
-    name: nginx-deployment
-    labels:
-      app: nginx
-  spec:
-    replicas: 3
-    selector:
-      matchLabels:
-        app: nginx
-    template:
-      metadata:
-        labels:
-          app: nginx
-      spec:
-        containers:
-        - name: nginx
-          image: nginx:1.14.2
-          ports:
-          - containerPort: 80
+  version: "3.9"
+  services:
+    postgres:
+      image: postgres:latest
+      environment:
+        POSTGRES_USER: usuario
+        POSTGRES_PASSWORD: senha
+        POSTGRES_DB: meu_banco
+      volumes:
+        - db_data:/var/lib/postgresql/data
+  volumes:
+    db_data:
   ```
-  > **Pergunta:** Analise esse YAML e verifique que configurações estão sendo realizadas por meio desse Deployment.
 
-  > **Dica:** Salve todos os arquivos YAML em uma mesma pasta para ter todos os arquivos em um local só, vai facilitarr para usar o `kubectl` ao longo do Lab.
+  6. No mesmo diretório do arquivo docker-compose.yml, execute o comando:
+
+  ```docker-compose up -d```
